@@ -1,16 +1,13 @@
-from subprocess import call
 import os
+from musicbeeipc import *
 import launchy
 
-# VARIABLES
-everythingPath = "C:\\Program Files (x86)\\Everything\\Everything.exe"
-
-class pyEverything(launchy.Plugin):
+class PyMusicbeeQueue(launchy.Plugin):
     def __init__(self):
         launchy.Plugin.__init__(self)
-        self.name = "pyEverything"
+        self.name = "PyMusicbeeQueue"
         self.hash = launchy.hash(self.name)
-        self.icon = os.path.join(launchy.getIconsPath(), "everything.png")
+        self.icon = os.path.join(launchy.getIconsPath(), "musicbee.png")
 
     def init(self):
         pass
@@ -30,14 +27,16 @@ class pyEverything(launchy.Plugin):
     def getResults(self, inputDataList, resultsList):
         text = inputDataList[0].getText()
         resultsList.push_back( launchy.CatItem(text,
-            "pyEverything: " + text,
-            self.getID(), self.getIcon()) )
+                                               "Play Song: " + text,
+                                                self.getID(), self.getIcon()) )
 
     def getCatalog(self, resultsList):
         pass
 
     def launchItem(self, inputDataList, catItemOrig):
         catItem = inputDataList[-1].getTopResult()
-        call([everythingPath, "-search", catItem.fullPath])
+        mbIPC = MusicBeeIPC()
+        mbIPC.search_and_play_first(catItem.fullPath)
 
-launchy.registerPlugin(pyEverything)
+
+launchy.registerPlugin(PyMusicbeeQueue)
